@@ -18,7 +18,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  // TODO: Replace with actual Firebase project values after running FlutterFire CLI
+  // TODO: Replace with actual Firebase project values after running FlutterFire CLI:
+  // dart pub global activate flutterfire_cli
+  // flutterfire configure
+  // The CLI will regenerate this file with real credentials.
+  // NEVER commit real API keys to source control.
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'YOUR_ANDROID_API_KEY',
     appId: 'YOUR_ANDROID_APP_ID',
