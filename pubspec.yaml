@@ -1,0 +1,57 @@
+name: app_rap
+description: Application de culture rap français - Freemium quiz, collection & duels.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.16.0
+  cloud_firestore: ^4.14.0
+  firebase_messaging: ^14.7.10
+  firebase_analytics: ^10.8.0
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
+  go_router: ^13.0.1
+  google_fonts: ^6.1.0
+  flutter_animate: ^4.5.0
+  cached_network_image: ^3.3.1
+  shimmer: ^3.0.0
+  lottie: ^3.0.0
+  flutter_svg: ^2.0.9
+  intl: ^0.19.0
+  shared_preferences: ^2.2.2
+  url_launcher: ^6.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  build_runner: ^2.4.8
+  riverpod_generator: ^2.3.9
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/animations/
+  # Fonts are served via the google_fonts package at runtime.
+  # To bundle Poppins locally (for offline use), download the font files from
+  # https://fonts.google.com/specimen/Poppins and place them in assets/fonts/,
+  # then uncomment the section below.
+  # fonts:
+  #   - family: Poppins
+  #     fonts:
+  #       - asset: assets/fonts/Poppins-Regular.ttf
+  #       - asset: assets/fonts/Poppins-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/Poppins-SemiBold.ttf
+  #         weight: 600
+  #       - asset: assets/fonts/Poppins-Bold.ttf
+  #         weight: 700
+  #       - asset: assets/fonts/Poppins-ExtraBold.ttf
+  #         weight: 800
