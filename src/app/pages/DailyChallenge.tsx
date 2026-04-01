@@ -112,7 +112,7 @@ export default function DailyChallenge() {
       </div>
 
       <div style={{ background: '#1E1E2E', borderRadius: '100px', height: '6px', marginBottom: '24px', overflow: 'hidden' }}>
-        <div style={{ background: '#F59E0B', height: '100%', width: `${(currentIndex / questions.length) * 100}%`, transition: 'width 0.3s' }} />
+        <div style={{ background: '#F59E0B', height: '100%', width: `${((currentIndex + 1) / questions.length) * 100}%`, transition: 'width 0.3s' }} />
       </div>
 
       <AnimatePresence mode="wait">

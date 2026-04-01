@@ -149,7 +149,7 @@ export default function SoloQuiz() {
 
       {/* Progress */}
       <div style={{ background: '#1E1E2E', borderRadius: '100px', height: '6px', marginBottom: '24px', overflow: 'hidden' }}>
-        <div style={{ background: '#7C3AED', height: '100%', width: `${(currentIndex / quizQuestions.length) * 100}%`, transition: 'width 0.3s' }} />
+        <div style={{ background: '#7C3AED', height: '100%', width: `${((currentIndex + 1) / quizQuestions.length) * 100}%`, transition: 'width 0.3s' }} />
       </div>
 
       <AnimatePresence mode="wait">
