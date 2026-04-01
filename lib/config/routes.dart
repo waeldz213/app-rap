@@ -24,20 +24,18 @@ import '../screens/settings/settings_screen.dart';
 import '../widgets/app_bottom_nav.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
+  // En mode mock, l'utilisateur est toujours connecté — on ignore authState.
+  ref.watch(authStateProvider);
 
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/home',
     redirect: (context, state) {
-      final isAuthenticated = authState.valueOrNull != null;
+      // Toujours authentifié en mode mock : bypasser login/onboarding
       final isAuthRoute = state.matchedLocation == '/login' ||
           state.matchedLocation == '/signup' ||
-          state.matchedLocation == '/onboarding';
-      final isSplash = state.matchedLocation == '/';
-
-      if (isSplash) return null;
-      if (!isAuthenticated && !isAuthRoute) return '/onboarding';
-      if (isAuthenticated && isAuthRoute) return '/home';
+          state.matchedLocation == '/onboarding' ||
+          state.matchedLocation == '/';
+      if (isAuthRoute) return '/home';
       return null;
     },
     routes: [

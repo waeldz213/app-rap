@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class DailyChallengeModel {
   final String id; // YYYY-MM-DD
   final String date;
@@ -33,7 +31,7 @@ class DailyChallengeModel {
       bonusCoins: json['bonusCoins'] as int? ?? 30,
       bonusXp: json['bonusXp'] as int? ?? 150,
       createdAt: json['createdAt'] != null
-          ? (json['createdAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now()
           : DateTime.now(),
       isCompleted: json['isCompleted'] as bool?,
     );
@@ -46,7 +44,7 @@ class DailyChallengeModel {
         'questionIds': questionIds,
         'bonusCoins': bonusCoins,
         'bonusXp': bonusXp,
-        'createdAt': Timestamp.fromDate(createdAt),
+        'createdAt': createdAt.toIso8601String(),
       };
 
   DailyChallengeModel copyWith({bool? isCompleted}) {

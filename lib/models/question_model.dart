@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 enum QuestionType {
   whoSaidThis, // Type 1: Qui a dit ça?
   completePunchline, // Type 2: Complète la punchline
@@ -53,7 +51,7 @@ class QuestionModel {
       difficulty: json['difficulty'] as int? ?? 1,
       isActive: json['isActive'] as bool? ?? true,
       createdAt: json['createdAt'] != null
-          ? (json['createdAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['createdAt'] as String? ?? '')
           : null,
     );
   }
@@ -72,7 +70,6 @@ class QuestionModel {
         'sourceAlbum': sourceAlbum,
         'difficulty': difficulty,
         'isActive': isActive,
-        'createdAt':
-            createdAt != null ? Timestamp.fromDate(createdAt!) : null,
+        'createdAt': createdAt?.toIso8601String(),
       };
 }

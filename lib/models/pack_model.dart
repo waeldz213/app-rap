@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class GrindRequirement {
   final int duelWinsRequired;
   final int soloCorrectRequired;
@@ -80,7 +78,7 @@ class PackModel {
               json['grindRequirement'] as Map<String, dynamic>)
           : null,
       createdAt: json['createdAt'] != null
-          ? (json['createdAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['createdAt'] as String? ?? '')
           : null,
     );
   }
@@ -100,7 +98,6 @@ class PackModel {
         'iconEmoji': iconEmoji,
         'questionCount': questionCount,
         'grindRequirement': grindRequirement?.toJson(),
-        'createdAt':
-            createdAt != null ? Timestamp.fromDate(createdAt!) : null,
+        'createdAt': createdAt?.toIso8601String(),
       };
 }
