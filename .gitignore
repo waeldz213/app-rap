@@ -54,6 +54,10 @@ lib/firebase_options.dart
 # Node modules for Cloud Functions
 functions/node_modules/
 
+# Node.js / React
+node_modules/
+dist/
+
 # Google Services files (add your own)
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist

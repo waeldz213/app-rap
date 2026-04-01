@@ -1,0 +1,33 @@
+:root {
+  --background: #0A0A0F;
+  --surface: #14141F;
+  --surface-variant: #1E1E2E;
+  --primary: #7C3AED;
+  --primary-hover: #6D28D9;
+  --secondary: #3B82F6;
+  --accent: #F59E0B;
+  --success: #10B981;
+  --error: #EF4444;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+  --border: #2D2D3D;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-behavior: smooth;
+}
