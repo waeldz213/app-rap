@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle, XCircle, ArrowLeft, Flame } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { DAILY_CHALLENGE, QUESTIONS } from '../data';
+import type { Question } from '../types';
 
 export default function DailyChallenge() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ export default function DailyChallenge() {
 
   const questions = DAILY_CHALLENGE.questionIds
     .map(id => QUESTIONS.find(q => q.id === id))
-    .filter((q): q is (typeof QUESTIONS)[number] => q !== undefined);
+    .filter((q): q is Question => q !== undefined);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
