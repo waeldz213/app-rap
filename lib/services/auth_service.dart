@@ -1,30 +1,19 @@
 // Mock auth service — Firebase désactivé pour les tests en local
 import '../models/user_model.dart';
+import 'mock_data.dart';
 
 class AuthService {
-  UserModel get currentUser => _mockUser;
-
-  final UserModel _mockUser = UserModel(
-    id: 'mock-user-1',
-    email: 'test@mock.com',
-    displayName: 'RapFan42',
-    isPremium: false,
-    xp: 3400,
-    level: 7,
-    coins: 250,
-    stats: const UserStats(),
-    createdAt: DateTime(2024, 1, 1),
-  );
+  UserModel get currentUser => MockData.currentUser;
 
   Future<UserModel?> signIn(String email, String password) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return _mockUser;
+    return MockData.currentUser;
   }
 
   Future<UserModel?> signUp(
       String email, String password, String displayName) async {
     await Future.delayed(const Duration(milliseconds: 300));
-    return _mockUser;
+    return MockData.currentUser;
   }
 
   Future<void> signOut() async {
