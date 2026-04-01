@@ -18,10 +18,11 @@ class DefaultFirebaseOptions {
     }
   }
 
-  // TODO: Replace with actual Firebase project values after running FlutterFire CLI:
-  // dart pub global activate flutterfire_cli
-  // flutterfire configure
-  // The CLI will regenerate this file with real credentials.
+  // IMPORTANT: These placeholder values will cause a runtime crash.
+  // You MUST replace them before the app can function:
+  //   dart pub global activate flutterfire_cli
+  //   flutterfire configure
+  // The CLI regenerates this file with real credentials from your Firebase project.
   // NEVER commit real API keys to source control.
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'YOUR_ANDROID_API_KEY',
