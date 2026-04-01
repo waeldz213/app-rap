@@ -52,10 +52,15 @@ exports.validateDuelResult = functions.firestore
     batch.update(change.after.ref, { winnerId, resolvedAt: admin.firestore.FieldValue.serverTimestamp() });
 
     // Distribute XP & coins
+    // In a tie (winnerId === null) both players receive tie rewards.
     const winnerXp = 100;
     const loserXp = 30;
+    const tieXp = 60;
     const winnerCoins = 50;
     const loserCoins = 10;
+    const tieCoins = 25;
+
+    const isTie = winnerId === null;
 
     const updateUser = (userId, xp, coins) => {
       const userRef = db.doc(`users/${userId}`);
@@ -67,8 +72,13 @@ exports.validateDuelResult = functions.firestore
       });
     };
 
-    updateUser(after.initiatorUserId, initiatorScore >= opponentScore ? winnerXp : loserXp, initiatorScore >= opponentScore ? winnerCoins : loserCoins);
-    updateUser(after.opponentUserId, opponentScore >= initiatorScore ? winnerXp : loserXp, opponentScore >= initiatorScore ? winnerCoins : loserCoins);
+    if (isTie) {
+      updateUser(after.initiatorUserId, tieXp, tieCoins);
+      updateUser(after.opponentUserId, tieXp, tieCoins);
+    } else {
+      updateUser(after.initiatorUserId, initiatorScore > opponentScore ? winnerXp : loserXp, initiatorScore > opponentScore ? winnerCoins : loserCoins);
+      updateUser(after.opponentUserId, opponentScore > initiatorScore ? winnerXp : loserXp, opponentScore > initiatorScore ? winnerCoins : loserCoins);
+    }
 
     await batch.commit();
     functions.logger.info(`Duel ${duelId} resolved. Winner: ${winnerId}`);

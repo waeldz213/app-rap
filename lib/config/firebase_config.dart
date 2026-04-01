@@ -12,19 +12,36 @@ import 'package:flutter/foundation.dart'
 /// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
-    if (kIsWeb) return web;
+    if (kIsWeb) return _validated(web);
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        return android;
+        return _validated(android);
       case TargetPlatform.iOS:
-        return ios;
+        return _validated(ios);
       case TargetPlatform.macOS:
-        return macos;
+        return _validated(macos);
       default:
         throw UnsupportedError(
           'DefaultFirebaseOptions are not supported for this platform.',
         );
     }
+  }
+
+  /// Validates that placeholder values have been replaced.
+  static FirebaseOptions _validated(FirebaseOptions options) {
+    if (options.projectId.startsWith('TODO_')) {
+      throw StateError(
+        '\n\n'
+        '══════════════════════════════════════════════════════════════════\n'
+        '  Firebase is not configured yet!\n'
+        '  Please run: dart pub global activate flutterfire_cli\n'
+        '              flutterfire configure\n'
+        '  Then replace lib/config/firebase_config.dart with the generated\n'
+        '  firebase_options.dart file.\n'
+        '══════════════════════════════════════════════════════════════════\n',
+      );
+    }
+    return options;
   }
 
   // TODO: Replace with real values from flutterfire configure

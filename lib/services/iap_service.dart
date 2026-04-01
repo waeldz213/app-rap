@@ -12,14 +12,19 @@ class IapService {
     _isAvailable = false;
   }
 
-  Future<void> purchaseSubscription(String productId) async {
-    // TODO: Implement purchase flow
-    throw UnimplementedError('IAP not yet implemented');
+  /// Initiates a subscription purchase flow.
+  /// Returns true if the purchase was initiated successfully.
+  Future<bool> purchaseSubscription(String productId) async {
+    // TODO: Implement real purchase flow with in_app_purchase package.
+    // For now, return false to signal that IAP is not yet available.
+    return false;
   }
 
-  Future<void> restorePurchases() async {
-    // TODO: Implement restore purchases
-    throw UnimplementedError('IAP not yet implemented');
+  /// Restores previously completed purchases.
+  /// Returns true if restore was initiated successfully.
+  Future<bool> restorePurchases() async {
+    // TODO: Implement restore purchases with in_app_purchase package.
+    return false;
   }
 
   void dispose() {

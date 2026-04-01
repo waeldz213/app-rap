@@ -1,9 +1,12 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/card_model.dart';
 import '../config/constants.dart';
 
 class CollectionService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final Random _random = Random.secure();
 
   Future<List<CardModel>> getUserCards(String userId) async {
     final snap = await _firestore
@@ -240,7 +243,7 @@ class CollectionService {
   }
 
   String _drawRarity() {
-    final roll = (DateTime.now().microsecond / 1000000.0);
+    final roll = _random.nextDouble();
     if (roll < AppConstants.legendaireRate) return 'legendaire';
     if (roll < AppConstants.legendaireRate + AppConstants.epiqueRate) {
       return 'epique';

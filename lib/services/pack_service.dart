@@ -1,3 +1,10 @@
+// ⚠️  LEGAL NOTICE — IMPORTANT ⚠️
+// All question content (quotes, punchlines) in this file is FICTIONAL and
+// generically inspired by the French rap style. It does NOT reproduce any real
+// lyrics. Before publishing the app, ALL content MUST be reviewed and validated
+// by a legal expert specialising in intellectual property / droit de citation.
+// See CONTENT_GUIDE.md for guidelines.
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/pack_model.dart';
 import '../models/question_model.dart';
