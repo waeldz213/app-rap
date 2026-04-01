@@ -206,10 +206,10 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
               // Answer options
               Expanded(
                 child: ListView.separated(
-                  itemCount: question.options.length,
+                  itemCount: question.choices.length,
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
-                    final option = question.options[index];
+                    final option = question.choices[index];
                     return AnswerButton(
                       key: ValueKey('${question.id}_$index'),
                       text: option,
@@ -220,7 +220,7 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                   },
                 ),
               ),
-              if (_hasAnswered && question.explanation != null) ...[
+              if (_hasAnswered && question.citationLabel.isNotEmpty) ...[
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(12),
@@ -231,12 +231,12 @@ class _QuizScreenState extends ConsumerState<QuizScreen> {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.info_outline,
+                      const Icon(Icons.music_note,
                           color: AppTheme.secondary, size: 18),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          question.explanation!,
+                          question.citationLabel,
                           style: const TextStyle(
                             color: AppTheme.textSecondary,
                             fontSize: 13,

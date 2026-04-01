@@ -211,10 +211,10 @@ class _DuelScreenState extends ConsumerState<DuelScreen> {
                     const SizedBox(height: 16),
                     Expanded(
                       child: ListView.separated(
-                        itemCount: question.options.length,
+                        itemCount: question.choices.length,
                         separatorBuilder: (_, __) => const SizedBox(height: 10),
                         itemBuilder: (context, i) {
-                          final option = question.options[i];
+                          final option = question.choices[i];
                           return AnswerButton(
                             text: option,
                             state: _getAnswerState(option),

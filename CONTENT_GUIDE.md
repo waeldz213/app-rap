@@ -10,28 +10,32 @@ Collection Firestore : `packs`
 
 ```json
 {
-  "id": "booba-2000s",
-  "name": "Booba — Années 2000",
-  "description": "Testez vos connaissances sur la discographie de Booba des années 2000",
-  "imageUrl": "https://storage.example.com/packs/booba-2000s.jpg",
-  "isPremium": false,
-  "price": null,
-  "questionCount": 20,
-  "category": "artiste",
-  "artist": "Booba",
-  "era": "2000-2010",
-  "difficulty": 3,
-  "totalPlays": 0,
+  "id": "classiques-absolus",
+  "title": "Classiques Absolus",
+  "subtitle": "Les hits incontournables",
+  "description": "Hits incontournables, refrains et punchlines ultra connues",
+  "theme": "Classiques",
+  "isFree": true,
+  "priceType": "free",
+  "iapSkuAndroid": null,
+  "iapSkuIos": null,
   "grindRequirement": null,
   "isActive": true,
-  "createdAt": "Timestamp Firestore"
+  "sortOrder": 1,
+  "coverImageUrl": "https://storage.example.com/packs/classiques-absolus.jpg",
+  "gradientStart": "#7C3AED",
+  "gradientEnd": "#3B82F6",
+  "iconEmoji": "🎤"
 }
 ```
 
-### Pack avec condition Grind
+### Pack Premium avec condition Grind
 
 ```json
 {
+  "id": "legendes-90s",
+  "title": "Légendes 90s/2000s",
+  "priceType": "grind",
   "grindRequirement": {
     "duelWinsRequired": 20,
     "soloCorrectRequired": 150
@@ -39,54 +43,78 @@ Collection Firestore : `packs`
 }
 ```
 
+### Types de prix (`priceType`)
+| Valeur | Description |
+|--------|-------------|
+| `free` | Gratuit pour tous |
+| `subscription` | Abonnement mensuel/annuel |
+| `one_time` | Achat unique du pack |
+| `grind` | Débloqué par progression |
+
 ---
 
 ## Ajouter des Questions
 
 Collection Firestore : `questions`
 
-### Question à choix multiples
+> **⚠️ Note juridique** : Les citations doivent être courtes (droit de courte citation), accompagnées des métadonnées complètes (artiste + morceau + album + année). Faire valider par un juriste avant publication.
+
+### Type 1 — "Qui a dit ça ?" (`whoSaidIt`)
+
+L'utilisateur doit identifier l'artiste qui a dit la citation.
 
 ```json
 {
-  "id": "q_booba_001",
-  "packId": "booba-2000s",
-  "type": "multipleChoice",
-  "question": "En quelle année est sorti l'album 'Lunatic' de Booba ?",
-  "options": ["1999", "2000", "2001", "2002"],
-  "correctAnswer": "2000",
-  "explanation": "L'album Lunatic est sorti le 19 septembre 2000 sous le label Roc La Familia.",
-  "difficulty": 2,
-  "mediaUrl": null,
-  "isActive": true
-}
-```
-
-### Question Vrai/Faux
-
-```json
-{
-  "id": "q_booba_002",
-  "packId": "booba-2000s",
-  "type": "trueFalse",
-  "question": "Booba est membre du groupe Lunatic avec Ali.",
-  "options": ["Vrai", "Faux"],
-  "correctAnswer": "Vrai",
-  "explanation": "Booba (Élie Yaffa) et Ali (Régis Mwamba) forment le duo Lunatic.",
+  "id": "q_classiques_001",
+  "packId": "classiques-absolus",
+  "type": "whoSaidIt",
+  "artistName": "Jul",
+  "artistId": "jul",
+  "quoteText": "Je veux pas d'ta pitié, garde tes larmes pour toi, j'ai le soleil dans ma vie et la force en moi",
+  "missingWord": null,
+  "choices": ["Jul", "SCH", "Alonzo", "Soso Maness"],
+  "correctAnswer": "Jul",
   "difficulty": 1,
-  "mediaUrl": null,
+  "sourceTrack": "Titre fictif — à remplacer",
+  "sourceAlbum": "Album fictif — à remplacer",
+  "sourceYear": 2018,
+  "citationLabel": "Jul — Titre fictif, Album fictif (2018)",
   "isActive": true
 }
 ```
 
-### Question avec image
+### Type 2 — "Complète la Punchline" (`completeThePunchline`)
+
+L'utilisateur doit trouver le mot manquant (remplacé par `***`).
 
 ```json
 {
-  "mediaUrl": "https://storage.example.com/questions/pochette-0.9.jpg",
-  "question": "À quel album appartient cette pochette ?"
+  "id": "q_classiques_006",
+  "packId": "classiques-absolus",
+  "type": "completeThePunchline",
+  "artistName": "Ninho",
+  "artistId": "ninho",
+  "quoteText": "J'suis né dans la *** mais j'ai grandi dans la lumière",
+  "missingWord": "nuit",
+  "choices": ["nuit", "pluie", "rue", "douleur"],
+  "correctAnswer": "nuit",
+  "difficulty": 2,
+  "sourceTrack": "Titre fictif — à remplacer",
+  "sourceAlbum": "Album fictif — à remplacer",
+  "sourceYear": 2019,
+  "citationLabel": "Ninho — Titre fictif, Album fictif (2019)",
+  "isActive": true
 }
 ```
+
+### Règles de qualité pour les questions
+
+1. **4 choix toujours** — jamais plus, jamais moins
+2. **Crédibilité des mauvais choix** — les artistes ou mots proposés doivent être plausibles dans le contexte
+3. **Métadonnées complètes** — `sourceTrack`, `sourceAlbum`, `sourceYear`, `citationLabel` obligatoires
+4. **`citationLabel`** — format : `"Artiste — Morceau, Album (Année)"`
+5. **Difficulty 1-5** : 1 = très facile (artiste très connu), 5 = expert
+6. **`isActive: false`** pour les questions à valider/corriger
 
 ---
 
@@ -97,32 +125,57 @@ Collection Firestore : `cards`
 ```json
 {
   "id": "card_booba_legendary",
-  "name": "Booba — Légende",
-  "description": "Le Duc de Boulogne. Pionnier du rap français depuis les années 90.",
+  "artistName": "Booba",
+  "artistId": "booba",
+  "rarity": "legendaire",
+  "packId": "legendes-90s",
+  "title": "Booba — Le Duc Ultime",
   "imageUrl": "https://storage.example.com/cards/booba-legendary.jpg",
-  "rarity": "legendary",
-  "artist": "Booba",
-  "era": "1990-2024",
-  "bonusType": "score",
+  "bonusType": "score_boost",
   "bonusValue": 0.10,
-  "packId": "booba-2000s"
+  "flavorText": "Le Duc de Boulogne. Pionnier depuis les 90s.",
+  "sourceTrack": null,
+  "sourceAlbum": "Temps Mort",
+  "isLimited": false
 }
 ```
 
 ### Raretés disponibles
-| Valeur | Affichage | Taux de drop | Couleur |
-|--------|-----------|--------------|---------|
+| Valeur Firestore | Affichage | Taux de drop | Couleur |
+|-----------------|-----------|--------------|---------|
 | `commune` | Commune | 60% | Gris |
 | `rare` | Rare | 25% | Bleu |
-| `epic` | Épique | 12% | Violet |
-| `legendary` | Légendaire | 3% | Or |
+| `epique` | Épique | 12% | Violet |
+| `legendaire` | Légendaire | 3% | Or |
 
-### Types de bonus
+### Bonus de carte (`bonusType`)
 | `bonusType` | `bonusValue` | Effet |
 |-------------|--------------|-------|
-| `score` | `0.10` | +10% de score quand équipée |
-| `xp` | `0.15` | +15% XP gagné |
-| `coins` | `0.05` | +5% pièces gagnées |
+| `score_boost` | `0.10` | +10% de score en solo si carte équipée |
+| `null` | `null` | Purement collectible |
+
+---
+
+## Exemples de cartes par rareté
+
+### Commune (~60%)
+- "Jul - Le Flow du Sud"
+- "Ninho - Le Roi du Mélo"
+- "SCH - L'Architecte"
+
+### Rare (~25%)
+- "PNL - Le Monde Chico Era"
+- "Booba - Temps Mort Era"
+- "Sefyu - Molotov 4"
+
+### Épique (~12%)
+- "Feat Légendaire - Nekfeu x Alpha Wann"
+- "Album Culte - Suprême NTM"
+
+### Légendaire (~3%)
+- "Booba - Le Duc Ultime"
+- "IAM - L'École du Micro d'Argent"
+- "Oxmo Puccino - Le Poète"
 
 ---
 
@@ -135,15 +188,10 @@ Collection Firestore : `cards`
 - Nommage : `{pack-id}.jpg`
 
 ### Cartes
-- Format recommandé : JPG ou PNG avec fond
+- Format recommandé : JPG ou PNG
 - Dimensions : **400×560px** (ratio portrait, similaire à une carte à jouer)
 - Max : 150 Ko
 - Nommage : `{card-id}.jpg`
-
-### Questions (media optionnel)
-- Format : JPG ou PNG
-- Dimensions : **800×400px**
-- Max : 300 Ko
 
 ---
 
@@ -177,7 +225,7 @@ async function importData() {
   });
   
   await batch.commit();
-  console.log('Import terminé!');
+  console.log('Import terminé !');
 }
 
 importData().catch(console.error);
@@ -187,7 +235,7 @@ importData().catch(console.error);
 
 ## Défi Quotidien
 
-Le défi quotidien est généré automatiquement chaque nuit à minuit (heure de Paris) par la Cloud Function `generateDailyChallenge`.
+Le défi quotidien est généré automatiquement chaque jour à 6h00 (heure de Paris) par la Cloud Function `generateDailyChallenge`.
 
 Pour créer un défi manuellement :
 
@@ -197,12 +245,12 @@ Pour créer un défi manuellement :
 {
   "id": "2024-01-15",
   "date": "2024-01-15",
-  "questionIds": ["q_001", "q_002", ..., "q_010"],
-  "completedByUserIds": [],
-  "rewards": {
-    "coins": 25,
-    "xp": 50,
-    "boosterChance": 0.30
-  }
+  "packId": "classiques-absolus",
+  "questionId": "q_classiques_001",
+  "rewardCoins": 25,
+  "rewardXp": 50,
+  "rewardBoosterChance": 0.30,
+  "isActive": true
 }
 ```
+
