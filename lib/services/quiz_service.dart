@@ -1,27 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Mock quiz service — Firebase désactivé pour les tests en local
 import '../models/question_model.dart';
-import '../config/constants.dart';
+import 'mock_data.dart';
 
 class QuizService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   Future<List<QuestionModel>> getQuestionsForPack(
     String packId, {
-    int limit = AppConstants.questionsPerSession,
+    int limit = 5,
   }) async {
-    final snap = await _firestore
-        .collection(AppConstants.packsCollection)
-        .doc(packId)
-        .collection(AppConstants.questionsCollection)
-        .where('isActive', isEqualTo: true)
-        .limit(limit * 3)
-        .get();
-
-    final questions = snap.docs
-        .map((doc) => QuestionModel.fromJson(doc.data(), doc.id))
+    await Future.delayed(const Duration(milliseconds: 200));
+    final questions = MockData.questions
+        .where((q) => q.packId == packId)
         .toList();
-
-    questions.shuffle();
+    if (questions.isEmpty) {
+      return MockData.questions.take(limit).toList();
+    }
     return questions.take(limit).toList();
   }
 
@@ -29,18 +21,7 @@ class QuizService {
     String packId,
     List<String> ids,
   ) async {
-    if (ids.isEmpty) return [];
-    final futures = ids.map((id) => _firestore
-        .collection(AppConstants.packsCollection)
-        .doc(packId)
-        .collection(AppConstants.questionsCollection)
-        .doc(id)
-        .get());
-
-    final snaps = await Future.wait(futures);
-    return snaps
-        .where((s) => s.exists)
-        .map((s) => QuestionModel.fromJson(s.data()!, s.id))
-        .toList();
+    await Future.delayed(const Duration(milliseconds: 150));
+    return MockData.questions.where((q) => ids.contains(q.id)).toList();
   }
 }

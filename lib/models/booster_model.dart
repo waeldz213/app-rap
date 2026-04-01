@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class BoosterModel {
   final String id;
   final String userId;
@@ -23,7 +21,7 @@ class BoosterModel {
           List<String>.from(json['cardsObtained'] as List? ?? []),
       cost: json['cost'] as int? ?? 100,
       openedAt: json['openedAt'] != null
-          ? (json['openedAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['openedAt'] as String? ?? '') ?? DateTime.now()
           : DateTime.now(),
     );
   }
@@ -32,6 +30,6 @@ class BoosterModel {
         'userId': userId,
         'cardsObtained': cardsObtained,
         'cost': cost,
-        'openedAt': Timestamp.fromDate(openedAt),
+        'openedAt': openedAt.toIso8601String(),
       };
 }

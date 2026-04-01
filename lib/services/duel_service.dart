@@ -1,18 +1,8 @@
-import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// Mock duel service — Firebase désactivé pour les tests en local
 import '../models/duel_model.dart';
-import '../config/constants.dart';
+import 'mock_data.dart';
 
 class DuelService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  String _generateInviteCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    final rng = Random();
-    return List.generate(AppConstants.duelCodeLength,
-        (index) => chars[rng.nextInt(chars.length)]).join();
-  }
-
   Future<DuelModel> createDuel({
     required String initiatorUserId,
     required String initiatorDisplayName,
@@ -20,42 +10,17 @@ class DuelService {
     required String packTitle,
     required List<String> questionIds,
   }) async {
-    final inviteCode = _generateInviteCode();
-    final now = DateTime.now();
-
-    final data = {
-      'packId': packId,
-      'packTitle': packTitle,
-      'inviteCode': inviteCode,
-      'initiatorUserId': initiatorUserId,
-      'initiatorDisplayName': initiatorDisplayName,
-      'opponentUserId': null,
-      'opponentDisplayName': null,
-      'status': DuelStatus.waiting.value,
-      'questionIds': questionIds,
-      'initiatorAnswers': [],
-      'opponentAnswers': [],
-      'initiatorScore': 0,
-      'opponentScore': 0,
-      'winnerId': null,
-      'createdAt': Timestamp.fromDate(now),
-      'resolvedAt': null,
-    };
-
-    final ref = await _firestore
-        .collection(AppConstants.duelsCollection)
-        .add(data);
-
+    await Future.delayed(const Duration(milliseconds: 300));
     return DuelModel(
-      id: ref.id,
+      id: 'duel-mock-${DateTime.now().millisecondsSinceEpoch}',
       packId: packId,
       packTitle: packTitle,
-      inviteCode: inviteCode,
+      inviteCode: 'MOCK42',
       initiatorUserId: initiatorUserId,
       initiatorDisplayName: initiatorDisplayName,
       status: DuelStatus.waiting,
       questionIds: questionIds,
-      createdAt: now,
+      createdAt: DateTime.now(),
     );
   }
 
@@ -64,29 +29,23 @@ class DuelService {
     required String opponentUserId,
     required String opponentDisplayName,
   }) async {
-    final snap = await _firestore
-        .collection(AppConstants.duelsCollection)
-        .where('inviteCode', isEqualTo: inviteCode)
-        .where('status', isEqualTo: DuelStatus.waiting.value)
-        .limit(1)
-        .get();
-
-    if (snap.docs.isEmpty) return null;
-
-    final doc = snap.docs.first;
-    final duelData = doc.data();
-
-    if (duelData['initiatorUserId'] == opponentUserId) return null;
-
-    await doc.reference.update({
-      'opponentUserId': opponentUserId,
-      'opponentDisplayName': opponentDisplayName,
-      'status': DuelStatus.active.value,
-    });
-
-    return DuelModel.fromJson(
-      {...duelData, 'opponentUserId': opponentUserId, 'opponentDisplayName': opponentDisplayName, 'status': DuelStatus.active.value},
-      doc.id,
+    await Future.delayed(const Duration(milliseconds: 300));
+    final duel = MockData.duels.firstWhere(
+      (d) => d.inviteCode == inviteCode,
+      orElse: () => MockData.duels.first,
+    );
+    return DuelModel(
+      id: duel.id,
+      packId: duel.packId,
+      packTitle: duel.packTitle,
+      inviteCode: duel.inviteCode,
+      initiatorUserId: duel.initiatorUserId,
+      initiatorDisplayName: duel.initiatorDisplayName,
+      opponentUserId: opponentUserId,
+      opponentDisplayName: opponentDisplayName,
+      status: DuelStatus.active,
+      questionIds: duel.questionIds,
+      createdAt: duel.createdAt,
     );
   }
 
@@ -97,63 +56,21 @@ class DuelService {
     required List<DuelAnswer> answers,
     required int totalScore,
   }) async {
-    final isInitiator = userId == initiatorUserId;
-    final field = isInitiator ? 'initiatorAnswers' : 'opponentAnswers';
-    final scoreField = isInitiator ? 'initiatorScore' : 'opponentScore';
-
-    final ref = _firestore.collection(AppConstants.duelsCollection).doc(duelId);
-    final docSnap = await ref.get();
-    if (!docSnap.exists) return;
-
-    final data = docSnap.data()!;
-    final otherScoreField = isInitiator ? 'opponentScore' : 'initiatorScore';
-    final otherAnswers = isInitiator ? 'opponentAnswers' : 'initiatorAnswers';
-    final otherAnswersList = data[otherAnswers] as List? ?? [];
-
-    // If both players have submitted, mark as completed
-    final bothCompleted = otherAnswersList.isNotEmpty;
-
-    await ref.update({
-      field: answers.map((a) => a.toJson()).toList(),
-      scoreField: totalScore,
-      if (bothCompleted) 'status': DuelStatus.completed.value,
-    });
+    await Future.delayed(const Duration(milliseconds: 200));
+    // No-op en mode mock
   }
 
   Stream<DuelModel?> listenToDuel(String duelId) {
-    return _firestore
-        .collection(AppConstants.duelsCollection)
-        .doc(duelId)
-        .snapshots()
-        .map((snap) {
-      if (!snap.exists) return null;
-      return DuelModel.fromJson(snap.data()!, snap.id);
-    });
+    return Stream.value(
+      MockData.duels.firstWhere(
+        (d) => d.id == duelId,
+        orElse: () => MockData.duels.first,
+      ),
+    );
   }
 
   Future<List<DuelModel>> getUserDuels(String userId) async {
-    final initiatorSnap = await _firestore
-        .collection(AppConstants.duelsCollection)
-        .where('initiatorUserId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
-        .limit(20)
-        .get();
-
-    final opponentSnap = await _firestore
-        .collection(AppConstants.duelsCollection)
-        .where('opponentUserId', isEqualTo: userId)
-        .orderBy('createdAt', descending: true)
-        .limit(20)
-        .get();
-
-    final duels = [
-      ...initiatorSnap.docs
-          .map((d) => DuelModel.fromJson(d.data(), d.id)),
-      ...opponentSnap.docs
-          .map((d) => DuelModel.fromJson(d.data(), d.id)),
-    ];
-
-    duels.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-    return duels;
+    await Future.delayed(const Duration(milliseconds: 200));
+    return MockData.duels;
   }
 }

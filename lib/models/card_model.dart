@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 enum CardRarity {
   commune,
   rare,
@@ -91,11 +89,11 @@ class CardModel {
       bonusValue: (json['bonusValue'] as num?)?.toDouble() ?? 0.05,
       isActive: json['isActive'] as bool? ?? true,
       createdAt: json['createdAt'] != null
-          ? (json['createdAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['createdAt'] as String? ?? '')
           : null,
       count: json['count'] as int? ?? 1,
       obtainedAt: json['obtainedAt'] != null
-          ? (json['obtainedAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['obtainedAt'] as String? ?? '')
           : null,
     );
   }
@@ -109,7 +107,6 @@ class CardModel {
         'bonusType': bonusType,
         'bonusValue': bonusValue,
         'isActive': isActive,
-        'createdAt':
-            createdAt != null ? Timestamp.fromDate(createdAt!) : null,
+        'createdAt': createdAt?.toIso8601String(),
       };
 }

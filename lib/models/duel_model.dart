@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 enum DuelStatus {
   waiting,
   active,
@@ -132,10 +130,10 @@ class DuelModel {
       opponentScore: json['opponentScore'] as int? ?? 0,
       winnerId: json['winnerId'] as String?,
       createdAt: json['createdAt'] != null
-          ? (json['createdAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now()
           : DateTime.now(),
       resolvedAt: json['resolvedAt'] != null
-          ? (json['resolvedAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['resolvedAt'] as String? ?? '')
           : null,
     );
   }
@@ -157,8 +155,7 @@ class DuelModel {
         'initiatorScore': initiatorScore,
         'opponentScore': opponentScore,
         'winnerId': winnerId,
-        'createdAt': Timestamp.fromDate(createdAt),
-        'resolvedAt':
-            resolvedAt != null ? Timestamp.fromDate(resolvedAt!) : null,
+        'createdAt': createdAt.toIso8601String(),
+        'resolvedAt': resolvedAt?.toIso8601String(),
       };
 }

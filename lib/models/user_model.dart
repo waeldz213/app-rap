@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class UserModel {
   final String id;
   final String email;
@@ -39,7 +37,7 @@ class UserModel {
       avatarUrl: json['avatarUrl'] as String?,
       isPremium: json['isPremium'] as bool? ?? false,
       premiumUntil: json['premiumUntil'] != null
-          ? (json['premiumUntil'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['premiumUntil'] as String? ?? '')
           : null,
       xp: json['xp'] as int? ?? 0,
       level: json['level'] as int? ?? 1,
@@ -49,10 +47,10 @@ class UserModel {
           : const UserStats(),
       equippedCardIds: List<String>.from(json['equippedCardIds'] as List? ?? []),
       createdAt: json['createdAt'] != null
-          ? (json['createdAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now()
           : DateTime.now(),
       lastLoginAt: json['lastLoginAt'] != null
-          ? (json['lastLoginAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['lastLoginAt'] as String? ?? '')
           : null,
     );
   }
@@ -63,16 +61,14 @@ class UserModel {
       'displayName': displayName,
       'avatarUrl': avatarUrl,
       'isPremium': isPremium,
-      'premiumUntil':
-          premiumUntil != null ? Timestamp.fromDate(premiumUntil!) : null,
+      'premiumUntil': premiumUntil?.toIso8601String(),
       'xp': xp,
       'level': level,
       'coins': coins,
       'stats': stats.toJson(),
       'equippedCardIds': equippedCardIds,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'lastLoginAt':
-          lastLoginAt != null ? Timestamp.fromDate(lastLoginAt!) : null,
+      'createdAt': createdAt.toIso8601String(),
+      'lastLoginAt': lastLoginAt?.toIso8601String(),
     };
   }
 

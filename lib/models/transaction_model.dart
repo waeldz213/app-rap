@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 enum TransactionType {
   subscription,
   booster,
@@ -84,7 +82,7 @@ class TransactionModel {
       purchaseToken: json['purchaseToken'] as String?,
       description: json['description'] as String? ?? '',
       createdAt: json['createdAt'] != null
-          ? (json['createdAt'] as Timestamp).toDate()
+          ? DateTime.tryParse(json['createdAt'] as String? ?? '') ?? DateTime.now()
           : DateTime.now(),
     );
   }
@@ -98,6 +96,6 @@ class TransactionModel {
         'platform': platform,
         'purchaseToken': purchaseToken,
         'description': description,
-        'createdAt': Timestamp.fromDate(createdAt),
+        'createdAt': createdAt.toIso8601String(),
       };
 }
